@@ -46,6 +46,9 @@ case "${1}" in
   coverage)
     "${python_exec}" studenttests.py -- "${@:2}"
     ;;
+  part_a)
+    "${python_exec}" unittests.py -v TestAbs TestRelu TestArgmax TestDot -- "${@:2}"
+    ;;
   test_abs)
     "${python_exec}" unittests.py -v TestAbs -- "${@:2}"
     ;;
