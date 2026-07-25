@@ -27,8 +27,11 @@ int main() {
   printf("Student 1's ID: %d\n", student1_ptr->id);
 
   free(student1_ptr);
+  //////////////////////////////////////
 
-  student_t *student2_ptr = malloc(sizeof(student_t));
+  // student_t *student2_ptr = malloc(sizeof(student_t));
+  student_t *student2_ptr = NULL;
+
 
   create_student_t_2(&student2_ptr, 6);
 
