@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "snake_utils.h"
+//#include "snake_utils.h"
 
 /* Helper function definitions */
 static void set_board_at(game_t *game, unsigned int row, unsigned int col, char ch);
@@ -23,13 +23,112 @@ static void update_head(game_t *game, unsigned int snum);
 
 /* Task 1 */
 game_t *create_default_game() {
-  // TODO: Implement this function.
-  return NULL;
+
+  const char *default_board[] = {
+        "####################\n",
+        "#                  #\n",
+        "# d>D    *         #\n",
+        "#                  #\n",
+        "#                  #\n",
+        "#                  #\n",
+        "#                  #\n",
+        "#                  #\n",
+        "#                  #\n",
+        "#                  #\n",
+        "#                  #\n",
+        "#                  #\n",
+        "#                  #\n",
+        "#                  #\n",
+        "#                  #\n",
+        "#                  #\n",
+        "#                  #\n",
+        "####################\n"
+    };
+
+    const unsigned int num_rows = 18;
+    const unsigned int num_cols = 20;
+    const unsigned int num_snakes = 1;
+
+    game_t *game = malloc(sizeof(game_t));
+
+    if (game == NULL) {
+        return NULL;
+    }
+
+    game->num_rows = num_rows;
+    game->num_snakes = num_snakes;
+
+    /*
+     * Allocate an array containing one snake_t.
+     */
+    game->snakes = malloc(game->num_snakes * sizeof(snake_t));
+
+    if (game->snakes == NULL) {
+        free(game);
+        return NULL;
+    }
+
+    game->snakes[0].head_row = 2;
+    game->snakes[0].head_col = 4;
+    game->snakes[0].tail_row = 2;
+    game->snakes[0].tail_col = 2;
+    game->snakes[0].live = true;
+
+    /*
+     * Allocate the array of row pointers.
+     */
+    game->board = malloc(game->num_rows * sizeof(char *));
+
+    if (game->board == NULL) {
+        free(game->snakes);
+        free(game);
+        return NULL;
+    }
+
+    for (unsigned int row = 0; row < game->num_rows; row++) {
+        /*
+         * Allocate 21 characters:
+         *
+         * 20 visible board characters
+         * 1 null terminator '\0'
+         */
+        game->board[row] = malloc((num_cols + 1) * sizeof(char));
+
+        if (game->board[row] == NULL) {
+            /*
+             * Free all rows allocated before this one.
+             */
+            for (unsigned int previous = 0; previous < row; previous++) {
+                free(game->board[previous]);
+            }
+
+            free(game->board);
+            free(game->snakes);
+            free(game);
+
+            return NULL;
+        }
+
+        strcpy(game->board[row], default_board[row]);
+    }
+
+    return game;
+
+
 }
 
 /* Task 2 */
 void free_game(game_t *game) {
-  // TODO: Implement this function.
+  for (int i = 0; i < game->num_rows; i++) {
+    free(game->board[i]);
+  }
+
+  free(game->board);
+
+  free(game->snakes);
+
+  free(game);
+
   return;
 }
 
