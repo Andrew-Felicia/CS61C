@@ -1,0 +1,10 @@
+.DS_STORE
+
+.*.swp
+.*.swo
+venv/
+
+# MyST build outputs
+_build
+
+~$*.pptx
