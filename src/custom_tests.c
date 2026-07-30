@@ -97,17 +97,135 @@ bool test_is_vowel() {
 /* Task 4.1 */
 
 bool test_is_tail() {
-  // TODO: Implement this function.
+  char testcase_1 = 'w';
+  char testcase_2 = 's';
+  char testcase_3 = 'a';
+  char testcase_4 = 'd';
+  char testcase_5 = 'm';
+  char testcase_6 = '\0';
+
+  bool output_1 = is_tail(testcase_1);
+  bool output_2 = is_tail(testcase_2);
+  bool output_3 = is_tail(testcase_3);
+  bool output_4 = is_tail(testcase_4);
+  bool output_5 = is_tail(testcase_5);
+  bool output_6 = is_tail(testcase_6);
+
+  if (!assert_true("output_1", output_1)) {
+    return false;
+  }
+  if (!assert_true("output_2", output_2)) {
+    return false;
+  }
+  if (!assert_true("output_3", output_3)) {
+    return false;
+  }
+  if (!assert_true("output_4", output_4)) {
+    return false;
+  }
+  if (!assert_false("output_5", output_5)) {
+    return false;
+  }
+  if (!assert_false("output_6", output_6)) {
+    return false;
+  }
+
+  
   return true;
 }
 
 bool test_is_head() {
-  // TODO: Implement this function.
+  const char valid_cases[] = {
+      'W', 'A', 'S', 'D', 'x'
+  };
+
+  const char invalid_cases[] = {
+      'w', 'a', 's', 'd',   // Tails, not heads
+      '^', '<', 'v', '>',   // Body characters
+      'X',                  // Only lowercase x is valid
+      'm', '0', ' ', '#', '*',
+      '\n', '\0'
+  };
+
+  char test_name[64];
+
+  for (size_t i = 0; i < sizeof(valid_cases); i++) {
+    char input = valid_cases[i];
+    bool output = is_head(input);
+
+    snprintf(test_name, sizeof(test_name),
+             "is_head valid case %zu: '%c'", i, input);
+
+    if (!assert_true(test_name, output)) {
+      return false;
+    }
+  }
+
+  for (size_t i = 0; i < sizeof(invalid_cases); i++) {
+    char input = invalid_cases[i];
+    bool output = is_head(input);
+
+    snprintf(test_name, sizeof(test_name),
+             "is_head invalid case %zu", i);
+
+    if (!assert_false(test_name, output)) {
+      return false;
+    }
+  }
+
   return true;
 }
 
 bool test_is_snake() {
-  // TODO: Implement this function.
+  const char valid_cases[] = {
+      // Tail
+      'w', 'a', 's', 'd',
+
+      // Body
+      '^', '<', 'v', '>',
+
+      // Head
+      'W', 'A', 'S', 'D',
+
+      // Dead head
+      'x'
+  };
+
+  const char invalid_cases[] = {
+      'X',
+      'm', 'z',
+      '0', '9',
+      ' ', '\t', '\n',
+      '#', '*', '+', '-',
+      '\0'
+  };
+
+  char test_name[64];
+
+  for (size_t i = 0; i < sizeof(valid_cases); i++) {
+    char input = valid_cases[i];
+    bool output = is_snake(input);
+
+    snprintf(test_name, sizeof(test_name),
+             "is_snake valid case %zu: '%c'", i, input);
+
+    if (!assert_true(test_name, output)) {
+      return false;
+    }
+  }
+
+  for (size_t i = 0; i < sizeof(invalid_cases); i++) {
+    char input = invalid_cases[i];
+    bool output = is_snake(input);
+
+    snprintf(test_name, sizeof(test_name),
+             "is_snake invalid case %zu", i);
+
+    if (!assert_false(test_name, output)) {
+      return false;
+    }
+  }
+
   return true;
 }
 

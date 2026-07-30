@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-//#include "snake_utils.h"
+#include "snake_utils.h"
 
 /* Helper function definitions */
 static void set_board_at(game_t *game, unsigned int row, unsigned int col, char ch);
@@ -134,8 +134,13 @@ void free_game(game_t *game) {
 
 /* Task 3 */
 void print_board(game_t *game, FILE *fp) {
-  // TODO: Implement this function.
-  return;
+  if (game == NULL || fp == NULL || game->board == NULL) {
+    return;
+  }
+
+  for (unsigned int i = 0; i < game->num_rows; i++) {
+    fprintf(fp, "%s", game->board[i]);
+  }
 }
 
 /*
@@ -170,7 +175,13 @@ static void set_board_at(game_t *game, unsigned int row, unsigned int col, char 
   Returns false otherwise.
 */
 static bool is_tail(char c) {
-  // TODO: Implement this function.
+  const char* tail = "wasd";
+  for (unsigned int i = 0; i < strlen(tail); i++) {
+    if (c == tail[i]) {
+      return true;
+    }
+  }
+  return false;
   return true;
 }
 
@@ -180,7 +191,13 @@ static bool is_tail(char c) {
   Returns false otherwise.
 */
 static bool is_head(char c) {
-  // TODO: Implement this function.
+  const char* tail = "WASDx";
+  for (unsigned int i = 0; i < strlen(tail); i++) {
+    if (c == tail[i]) {
+      return true;
+    }
+  }
+  return false;
   return true;
 }
 
@@ -189,7 +206,13 @@ static bool is_head(char c) {
   The snake consists of these characters: "wasd^<v>WASDx"
 */
 static bool is_snake(char c) {
-  // TODO: Implement this function.
+  const char* tail = "wasd^<v>WASDx";
+  for (unsigned int i = 0; i < strlen(tail); i++) {
+    if (c == tail[i]) {
+      return true;
+    }
+  }
+  return false;
   return true;
 }
 
