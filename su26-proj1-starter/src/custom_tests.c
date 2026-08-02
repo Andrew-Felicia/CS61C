@@ -230,22 +230,279 @@ bool test_is_snake() {
 }
 
 bool test_body_to_tail() {
-  // TODO: Implement this function.
+  char testcase_1 = '^';
+  char testcase_2 = '<';
+  char testcase_3 = 'v';
+  char testcase_4 = '>';
+
+  char output_1 = body_to_tail(testcase_1);
+  char output_2 = body_to_tail(testcase_2);
+  char output_3 = body_to_tail(testcase_3);
+  char output_4 = body_to_tail(testcase_4);
+
+  if (output_1 != 'w') {
+    printf("body_to_tail('^'): expected 'w', got '%c'\n", output_1);
+    return false;
+  }
+
+  if (output_2 != 'a') {
+    printf("body_to_tail('<'): expected 'a', got '%c'\n", output_2);
+    return false;
+  }
+
+  if (output_3 != 's') {
+    printf("body_to_tail('v'): expected 's', got '%c'\n", output_3);
+    return false;
+  }
+
+  if (output_4 != 'd') {
+    printf("body_to_tail('>'): expected 'd', got '%c'\n", output_4);
+    return false;
+  }
+
   return true;
 }
 
 bool test_head_to_body() {
-  // TODO: Implement this function.
+  char testcase_1 = 'W';
+  char testcase_2 = 'A';
+  char testcase_3 = 'S';
+  char testcase_4 = 'D';
+
+  char output_1 = head_to_body(testcase_1);
+  char output_2 = head_to_body(testcase_2);
+  char output_3 = head_to_body(testcase_3);
+  char output_4 = head_to_body(testcase_4);
+
+  if (output_1 != '^') {
+    printf("head_to_body('W'): expected '^', got '%c'\n", output_1);
+    return false;
+  }
+
+  if (output_2 != '<') {
+    printf("head_to_body('A'): expected '<', got '%c'\n", output_2);
+    return false;
+  }
+
+  if (output_3 != 'v') {
+    printf("head_to_body('S'): expected 'v', got '%c'\n", output_3);
+    return false;
+  }
+
+  if (output_4 != '>') {
+    printf("head_to_body('D'): expected '>', got '%c'\n", output_4);
+    return false;
+  }
+
   return true;
 }
 
+
+#include <stdbool.h>
+#include <limits.h>
+#include <stdio.h>
+
 bool test_get_next_row() {
-  // TODO: Implement this function.
+  /* Move down: v, s, S */
+  if (get_next_row(5, 'v') != 6) {
+    printf("get_next_row(5, 'v'): expected 6\n");
+    return false;
+  }
+
+  if (get_next_row(5, 's') != 6) {
+    printf("get_next_row(5, 's'): expected 6\n");
+    return false;
+  }
+
+  if (get_next_row(5, 'S') != 6) {
+    printf("get_next_row(5, 'S'): expected 6\n");
+    return false;
+  }
+
+  /* Move up: ^, w, W */
+  if (get_next_row(5, '^') != 4) {
+    printf("get_next_row(5, '^'): expected 4\n");
+    return false;
+  }
+
+  if (get_next_row(5, 'w') != 4) {
+    printf("get_next_row(5, 'w'): expected 4\n");
+    return false;
+  }
+
+  if (get_next_row(5, 'W') != 4) {
+    printf("get_next_row(5, 'W'): expected 4\n");
+    return false;
+  }
+
+  /* Horizontal direction characters should not change the row */
+  if (get_next_row(5, '>') != 5) {
+    printf("get_next_row(5, '>'): expected 5\n");
+    return false;
+  }
+
+  if (get_next_row(5, '<') != 5) {
+    printf("get_next_row(5, '<'): expected 5\n");
+    return false;
+  }
+
+  if (get_next_row(5, 'a') != 5) {
+    printf("get_next_row(5, 'a'): expected 5\n");
+    return false;
+  }
+
+  if (get_next_row(5, 'd') != 5) {
+    printf("get_next_row(5, 'd'): expected 5\n");
+    return false;
+  }
+
+  if (get_next_row(5, 'A') != 5) {
+    printf("get_next_row(5, 'A'): expected 5\n");
+    return false;
+  }
+
+  if (get_next_row(5, 'D') != 5) {
+    printf("get_next_row(5, 'D'): expected 5\n");
+    return false;
+  }
+
+  /* Unrelated characters should not change the row */
+  if (get_next_row(5, 'x') != 5) {
+    printf("get_next_row(5, 'x'): expected 5\n");
+    return false;
+  }
+
+  if (get_next_row(5, '*') != 5) {
+    printf("get_next_row(5, '*'): expected 5\n");
+    return false;
+  }
+
+  if (get_next_row(5, ' ') != 5) {
+    printf("get_next_row(5, ' '): expected 5\n");
+    return false;
+  }
+
+  if (get_next_row(5, '\0') != 5) {
+    printf("get_next_row(5, '\\0'): expected 5\n");
+    return false;
+  }
+
+  /* Boundary cases */
+  if (get_next_row(0, 'v') != 1) {
+    printf("get_next_row(0, 'v'): expected 1\n");
+    return false;
+  }
+
+  /*
+   * Because cur_row is unsigned, 0 - 1 wraps around to UINT_MAX.
+   */
+  if (get_next_row(0, '^') != UINT_MAX) {
+    printf("get_next_row(0, '^'): expected UINT_MAX\n");
+    return false;
+  }
+
   return true;
 }
 
 bool test_get_next_col() {
-  // TODO: Implement this function.
+  /* Move right: >, d, D */
+  if (get_next_col(5, '>') != 6) {
+    printf("get_next_col(5, '>'): expected 6\n");
+    return false;
+  }
+
+  if (get_next_col(5, 'd') != 6) {
+    printf("get_next_col(5, 'd'): expected 6\n");
+    return false;
+  }
+
+  if (get_next_col(5, 'D') != 6) {
+    printf("get_next_col(5, 'D'): expected 6\n");
+    return false;
+  }
+
+  /* Move left: <, a, A */
+  if (get_next_col(5, '<') != 4) {
+    printf("get_next_col(5, '<'): expected 4\n");
+    return false;
+  }
+
+  if (get_next_col(5, 'a') != 4) {
+    printf("get_next_col(5, 'a'): expected 4\n");
+    return false;
+  }
+
+  if (get_next_col(5, 'A') != 4) {
+    printf("get_next_col(5, 'A'): expected 4\n");
+    return false;
+  }
+
+  /* Vertical direction characters should not change the column */
+  if (get_next_col(5, '^') != 5) {
+    printf("get_next_col(5, '^'): expected 5\n");
+    return false;
+  }
+
+  if (get_next_col(5, 'v') != 5) {
+    printf("get_next_col(5, 'v'): expected 5\n");
+    return false;
+  }
+
+  if (get_next_col(5, 'w') != 5) {
+    printf("get_next_col(5, 'w'): expected 5\n");
+    return false;
+  }
+
+  if (get_next_col(5, 's') != 5) {
+    printf("get_next_col(5, 's'): expected 5\n");
+    return false;
+  }
+
+  if (get_next_col(5, 'W') != 5) {
+    printf("get_next_col(5, 'W'): expected 5\n");
+    return false;
+  }
+
+  if (get_next_col(5, 'S') != 5) {
+    printf("get_next_col(5, 'S'): expected 5\n");
+    return false;
+  }
+
+  /* Unrelated characters should not change the column */
+  if (get_next_col(5, 'x') != 5) {
+    printf("get_next_col(5, 'x'): expected 5\n");
+    return false;
+  }
+
+  if (get_next_col(5, '#') != 5) {
+    printf("get_next_col(5, '#'): expected 5\n");
+    return false;
+  }
+
+  if (get_next_col(5, ' ') != 5) {
+    printf("get_next_col(5, ' '): expected 5\n");
+    return false;
+  }
+
+  if (get_next_col(5, '\0') != 5) {
+    printf("get_next_col(5, '\\0'): expected 5\n");
+    return false;
+  }
+
+  /* Boundary cases */
+  if (get_next_col(0, '>') != 1) {
+    printf("get_next_col(0, '>'): expected 1\n");
+    return false;
+  }
+
+  /*
+   * Because cur_col is unsigned, 0 - 1 wraps around to UINT_MAX.
+   */
+  if (get_next_col(0, '<') != UINT_MAX) {
+    printf("get_next_col(0, '<'): expected UINT_MAX\n");
+    return false;
+  }
+
   return true;
 }
 
