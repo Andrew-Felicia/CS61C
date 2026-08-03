@@ -1,0 +1,4 @@
+numpy
+virtualenv==16.7.11
+terminaltables
+GradescopeBase

@@ -1,0 +1,29 @@
+{
+  "name": "project-nike-client",
+  "author": "Jerry Xu <jerryxu@berkeley.edu>",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
+  },
+  "dependencies": {
+    "@npmcli/promise-spawn": "^6.0.2",
+    "dotenv": "^16.0.3",
+    "undici": "^5.22.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.38.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-json-files": "^2.1.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-sort-class-members": "^1.17.1",
+    "prettier": "^2.8.7"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
