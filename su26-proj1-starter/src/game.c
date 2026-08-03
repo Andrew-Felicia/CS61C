@@ -372,25 +372,79 @@ static void update_tail(game_t *game, unsigned int snum) {
   set_board_at(game, tail_row, tail_col, ' ');
   set_board_at(game, next_row, next_col, body_to_tail(get_board_at(game, next_row, next_col)));
 
-  game->snakes[snum].head_row = next_row;
-  game->snakes[snum].head_col = next_col;
+  game->snakes[snum].tail_row = next_row;
+  game->snakes[snum].tail_col = next_col;
 }
 
 /* Task 4.5 */
 void update_game(game_t *game, int (*add_food)(game_t *game)) {
-  // TODO: Implement this function.
-  return;
+  unsigned int num_snakes = game->num_snakes;
+  for (unsigned int i = 0; i < num_snakes; i++) {
+    if (game->snakes[i].live) {
+      char next = next_square(game, i);
+      if (next == '#' || is_snake(next)) {
+        game->snakes[i].live = false;
+        set_board_at(game, game->snakes[i].head_row, game->snakes[i].head_col, 'x');
+      } else if(next == '*') {
+        update_head(game, i);
+        add_food(game);
+      } else {
+        update_head(game, i);
+        update_tail(game, i);
+      }
+    }
+
+  }
 }
 
 /* Task 5.1 */
 char *read_line(FILE *fp) {
-  // TODO: Implement this function.
-  return NULL;
+  if (fp == NULL) {
+    perror("can't open file!");
+    return NULL;
+  }
+
+  char buffer[256];
+  char *line = NULL;
+  size_t line_length = 0;
+  //when will fgets(buffer, sizeof(buffer), fp) return NULL?
+  //1. EOF is reached before reading any characters
+  //2. A reading error occurs
+  while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+    size_t buffer_length = strlen(buffer);
+    char *new_line = realloc(line, (line_length + buffer_length + 1) * sizeof(char));
+    if (new_line == NULL) {
+      free(line);
+      return NULL;
+    }
+
+    line = new_line;
+    memcpy(line + line_length, buffer, buffer_length + 1);
+    line_length += buffer_length;
+
+    if (strchr(buffer, '\n') != NULL) {
+      return line;
+    }
+
+  }
+  return line;
+
+  
+  
 }
 
 /* Task 5.2 */
 game_t *load_board(FILE *fp) {
-  // TODO: Implement this function.
+  // game_t *game = malloc(sizeof(game_t));
+  // if (game == NULL) {
+  //     return NULL;
+  // }
+
+  // game->num_snakes = 0;
+  // game->snakes = NULL;
+
+  // game->num_rows = 1;
+  // game->board = malloc(game->num_rows * sizeof(char *));
   return NULL;
 }
 
