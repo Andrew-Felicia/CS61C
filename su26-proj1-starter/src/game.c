@@ -435,17 +435,44 @@ char *read_line(FILE *fp) {
 
 /* Task 5.2 */
 game_t *load_board(FILE *fp) {
-  // game_t *game = malloc(sizeof(game_t));
-  // if (game == NULL) {
-  //     return NULL;
-  // }
+  if (fp == NULL) {
+    perror("can't open file!");
+    return NULL;
+  }
 
-  // game->num_snakes = 0;
-  // game->snakes = NULL;
+  game_t *game = malloc(sizeof(game_t));
+  if (game == NULL) {
+      return NULL;
+  }
 
-  // game->num_rows = 1;
-  // game->board = malloc(game->num_rows * sizeof(char *));
-  return NULL;
+  game->num_snakes = 0;
+  game->snakes = NULL;
+
+  game->num_rows = 0;
+  game->board = NULL;
+  
+  char *new_line = NULL;
+  while ((new_line = read_line(fp)) != NULL) {
+    char **new_board = realloc(game->board, (game->num_rows + 1) * sizeof(char *));
+
+    if (new_board == NULL) {
+      free(new_line);
+      for (unsigned int i = 0; i < game->num_rows; i++) {
+        free(game->board[i]);
+      }
+      free(game->board);
+      free(game);
+      return NULL;
+    }
+
+    game->board = new_board;
+    //strcpy(game->board[game->num_rows], new_line); //this will crash.
+    game->board[game->num_rows] = new_line;
+    game->num_rows ++;
+  }
+
+
+  return game;
 }
 
 /*
@@ -457,12 +484,42 @@ game_t *load_board(FILE *fp) {
   fill in the head row and col in the struct.
 */
 static void find_head(game_t *game, unsigned int snum) {
-  // TODO: Implement this function.
-  return;
+  unsigned int head_row = game->snakes[snum].tail_row;
+  unsigned int head_col = game->snakes[snum].tail_col;
+
+  while (!is_head(game->board[head_row][head_col])) {
+    char cur = game->board[head_row][head_col];
+    head_row = get_next_row(head_row, cur);
+    head_col = get_next_col(head_col, cur);
+  }
+  game->snakes[snum].head_row = head_row;
+  game->snakes[snum].head_col = head_col;
 }
 
 /* Task 6.2 */
 game_t *initialize_snakes(game_t *game) {
-  // TODO: Implement this function.
-  return NULL;
+  unsigned int num_snakes = 0;
+  game->snakes = NULL;
+
+  for (unsigned int r = 0; r < game->num_rows; r++) {
+    unsigned int num_cols = (unsigned int)strlen(game->board[r]);
+    for (unsigned int c = 0; c < num_cols; c++) {
+      if (is_tail(game->board[r][c])) {
+        snake_t *new_snake = realloc(game->snakes, (num_snakes + 1) * sizeof(snake_t));
+        if (new_snake == NULL) {
+          free(game->snakes);
+          return game;
+        }
+        game->snakes = new_snake;
+        game->snakes[num_snakes].tail_row = r;
+        game->snakes[num_snakes].tail_col = c;
+        find_head(game, num_snakes);
+        game->snakes[num_snakes].live = true;
+        num_snakes += 1;
+      }
+    }
+  }
+  game->num_snakes = num_snakes;
+
+  return game;
 }
