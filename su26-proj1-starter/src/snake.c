@@ -70,7 +70,8 @@ int main(int argc, char *argv[]) {
 
   // TODO: Update game. Use the deterministic_food function
   // (already implemented in snake_utils.h) to add food.
-  deterministic_food(game);
+  update_game(game, deterministic_food);
+  
 
   // Write updated board to file or stdout
   if (out_filename != NULL) {
