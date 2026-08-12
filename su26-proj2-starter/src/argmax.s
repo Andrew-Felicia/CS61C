@@ -21,6 +21,7 @@ argmax:
     li t1 0   #i = 0
     
     li t2  0 #the return index
+    lw t5 0(a0) #the first number
     
 
 
@@ -32,6 +33,15 @@ loop_continue:
     slli t3, t1, 2
     add t3, t3, a0
     lw t4 0(t3)
+    blt t4, t5, not_bigger
+    add t2, t1, zero
+    add t5, t4, zero
+
+
+not_bigger:
+    addi t1, t1, 1
+    j loop_start
+
     
 
 
@@ -41,5 +51,6 @@ error:
 
 loop_end:
     # Epilogue
+    add a0, t2, zero
 
     jr ra
