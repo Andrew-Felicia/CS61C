@@ -20,25 +20,44 @@
 dot:
 
     # Prologue
+    li t0 1
+    blt a2, t0, error1
+    blt a3, t0, error2
+    blt a4, t0, error2
+
+    slli t2, a3, 2 #step length
+    slli t3, a4, 2 
+
+    li t0 0 # number of pairs processed
+    li t1 0 # dot production accumulator
 
 
 loop_start:
+    bge t0, a2, loop_end
 
+    lw t4, 0(a0)
+    lw t5, 0(a1)
 
+    mul t6, t4, t5
+    add t1, t6, t1
+    addi t0, t0, 1 #process one more pair
 
+    add a0, a0, t2
+    add a1, a1, t3
 
+    j loop_start
+    
 
+error1:
+    li a0 36
+    j exit
 
-
-
-
-
+error2:
+    li a0 37
+    j exit
 
 
 loop_end:
-
-
     # Epilogue
-
-
+    mv a0 t1
     jr ra
