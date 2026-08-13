@@ -36,7 +36,7 @@ abs_loss
 class TestAbsLoss(unittest.TestCase):
     def test_simple(self):
         # load the test for abs_loss.s
-        t = AssemblyTest(self, "../src/../coverage-src/abs_loss.s")
+        t = AssemblyTest(self, "../coverage-src/abs_loss.s")
 
         #raise NotImplementedError("TODO")
 
@@ -55,7 +55,7 @@ class TestAbsLoss(unittest.TestCase):
         # load address of `array2` into register a3
         t.input_array("a3", array2)
         # call the `abs_loss` function
-        t.call("../src/../coverage-src/abs_loss.s")
+        t.call("abs_loss")
         # check that the result array contains the correct output
         t.check_array(array2, [0, 0, 0])
         # check that the register a0 contains the correct output
@@ -64,6 +64,41 @@ class TestAbsLoss(unittest.TestCase):
         t.execute()
 
     # Add other test cases if necessary
+    def test_mixed_values(self):
+        t = AssemblyTest(self, "../coverage-src/abs_loss.s")
+
+        array0 = t.array([1, -2, 7, 4])
+        array1 = t.array([3, -5, 7, 10])
+        result = t.array([-1, -1, -1, -1])
+
+        t.input_array("a0", array0)
+        t.input_array("a1", array1)
+        t.input_scalar("a2", 4)
+        t.input_array("a3", result)
+
+        t.call("abs_loss")
+
+        # Differences: -2, 3, 0, -6
+        # Absolute values: 2, 3, 0, 6
+        t.check_array(result, [2, 3, 0, 6])
+        t.check_scalar("a0", 11)
+
+        t.execute()
+
+    def test_invalid_length(self):
+        t = AssemblyTest(self, "../coverage-src/abs_loss.s")
+
+        array0 = t.array([1])
+        array1 = t.array([1])
+        result = t.array([-1])
+
+        t.input_array("a0", array0)
+        t.input_array("a1", array1)
+        t.input_scalar("a2", 0)
+        t.input_array("a3", result)
+
+        t.call("abs_loss")
+        t.execute(code=36)
 
     @classmethod
     def tearDownClass(cls):
@@ -91,32 +126,41 @@ squared_loss
 
 
 class TestSquaredLoss(unittest.TestCase):
-    def test_simple(self):
-        # load the test for squared_loss.s
+    def test_mixed_values(self):
         t = AssemblyTest(self, "../coverage-src/squared_loss.s")
 
-        raise NotImplementedError("TODO")
+        array0 = t.array([1, -2, 7])
+        array1 = t.array([3, -5, 7])
+        result = t.array([-1, -1, -1])
 
-        # TODO
-        # create input arrays in the data section
-        # TODO
-        # load array addresses into argument registers
-        # TODO
-        # load array length into argument register
-        # TODO
-        # create a result array in the data section (fill values with -1)
-        # TODO
-        # load result array address into argument register
-        # TODO
-        # call the `squared_loss` function
-        # TODO
-        # check that the result array contains the correct output
-        # TODO
-        # check that the register a0 contains the correct output
-        # TODO
-        # generate the `assembly/TestSquaredLoss_test_simple.s` file and run it through venus
-        # TODO
+        t.input_array("a0", array0)
+        t.input_array("a1", array1)
+        t.input_scalar("a2", 3)
+        t.input_array("a3", result)
 
+        t.call("squared_loss")
+
+        # Differences: -2, 3, 0
+        # Squares: 4, 9, 0
+        t.check_array(result, [4, 9, 0])
+        t.check_scalar("a0", 13)
+
+        t.execute()
+
+    def test_invalid_length(self):
+        t = AssemblyTest(self, "../coverage-src/squared_loss.s")
+
+        array0 = t.array([1])
+        array1 = t.array([1])
+        result = t.array([-1])
+
+        t.input_array("a0", array0)
+        t.input_array("a1", array1)
+        t.input_scalar("a2", 0)
+        t.input_array("a3", result)
+
+        t.call("squared_loss")
+        t.execute(code=36)
     # Add other test cases if neccesary
 
     @classmethod
@@ -145,28 +189,37 @@ zero_one_loss
 
 
 class TestZeroOneLoss(unittest.TestCase):
-    def test_simple(self):
-        # load the test for zero_one_loss.s
+    def test_equal_and_different(self):
         t = AssemblyTest(self, "../coverage-src/zero_one_loss.s")
 
-        raise NotImplementedError("TODO")
+        array0 = t.array([1, 2, 3, 4])
+        array1 = t.array([1, 9, 3, 0])
+        result = t.array([-1, -1, -1, -1])
 
-        # create input arrays in the data section
-        # TODO
-        # load array addresses into argument registers
-        # TODO
-        # load array length into argument register
-        # TODO
-        # create a result array in the data section (fill values with -1)
-        # TODO
-        # load result array address into argument register
-        # TODO
-        # call the `zero_one_loss` function
-        # TODO
-        # check that the result array contains the correct output
-        # TODO
-        # generate the `assembly/TestZeroOneLoss_test_simple.s` file and run it through venus
-        # TODO
+        t.input_array("a0", array0)
+        t.input_array("a1", array1)
+        t.input_scalar("a2", 4)
+        t.input_array("a3", result)
+
+        t.call("zero_one_loss")
+
+        t.check_array(result, [1, 0, 1, 0])
+        t.execute()
+
+    def test_invalid_length(self):
+        t = AssemblyTest(self, "../coverage-src/zero_one_loss.s")
+
+        array0 = t.array([1])
+        array1 = t.array([1])
+        result = t.array([-1])
+
+        t.input_array("a0", array0)
+        t.input_array("a1", array1)
+        t.input_scalar("a2", 0)
+        t.input_array("a3", result)
+
+        t.call("zero_one_loss")
+        t.execute(code=36)
 
     # Add other test cases if neccesary
 
@@ -193,18 +246,30 @@ initialize_zero
 
 
 class TestInitializeZero(unittest.TestCase):
-    def test_simple(self):
+    def test_multiple_elements(self):
         t = AssemblyTest(self, "../coverage-src/initialize_zero.s")
 
-        raise NotImplementedError("TODO")
+        t.input_scalar("a0", 5)
+        t.call("initialize_zero")
 
-        # input the length of the desired array
-        # TODO
-        # call the `initialize_zero` function
-        # TODO
-        # check that the register a0 contains the correct array (hint: look at the check_array_pointer function in framework.py)
-        # TODO
+        t.check_array_pointer("a0", [0, 0, 0, 0, 0])
         t.execute()
+
+    def test_invalid_length(self):
+        t = AssemblyTest(self, "../coverage-src/initialize_zero.s")
+
+        t.input_scalar("a0", 0)
+        t.call("initialize_zero")
+
+        t.execute(code=36)
+
+    def test_malloc_failure(self):
+        t = AssemblyTest(self, "../coverage-src/initialize_zero.s")
+
+        t.input_scalar("a0", 5)
+        t.call("initialize_zero")
+
+        t.execute(fail="malloc", code=26)
 
     # Add other test cases if neccesary
 
