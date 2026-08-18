@@ -4,6 +4,8 @@
 
 **Resource Structure**
 
+This is from ucb CS61C Summer 2026.
+
 
 Textbooks: course-notes(using MyST,building from jupyter book)
 
