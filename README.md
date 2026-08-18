@@ -1,3 +1,7 @@
+![ascii-art-text.png](ascii-art-text.png)
+
+
+
 **Resource Structure**
 
 
