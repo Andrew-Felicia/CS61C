@@ -1,2 +1,13 @@
 1. 
+Stage 1:
+Input register → Multiplier → Pipeline register
+      10 ns     +   60 ns   +     10 ns setup
+                                 = 80 ns
+
+Stage 2:
+Pipeline register → Adder → Output/state register
+        10 ns      + 45 ns +      10 ns setup
+                                 = 65 ns
 2. 
+fmax = 1 / 80 ns
+     = 12.5 MHz
