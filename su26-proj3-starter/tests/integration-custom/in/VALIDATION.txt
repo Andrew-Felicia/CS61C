@@ -1,0 +1,16 @@
+r01_add.s: 52 instructions; assembled and trace checked
+r02_sub.s: 52 instructions; assembled and trace checked
+r03_and.s: 61 instructions; assembled and trace checked
+r04_or.s: 61 instructions; assembled and trace checked
+r05_xor.s: 61 instructions; assembled and trace checked
+r06_sll.s: 92 instructions; assembled and trace checked
+r07_srl.s: 92 instructions; assembled and trace checked
+r08_sra.s: 92 instructions; assembled and trace checked
+r09_slt.s: 66 instructions; assembled and trace checked
+r10_mul.s: 93 instructions; assembled and trace checked
+r11_mulh.s: 93 instructions; assembled and trace checked
+r12_mulhu.s: 93 instructions; assembled and trace checked
+r13_decode_and_bsel.s: 44 instructions; assembled and trace checked
+r14_zero_and_register_ports.s: 95 instructions; assembled and trace checked
+Total: 14 files, 1047 instructions.
+Not run against the user CPU or course harness.

@@ -1,0 +1,55 @@
+# Task 8: SW/LW: full-width data, distinct addresses, and immediate load-after-store.
+# EXPECT comments describe state AFTER each instruction.
+# No LUI, pseudoinstructions, data directives, or uninitialized memory reads.
+
+addi t0, x0, 1024          # EXPECT: t0 = 0x00000400
+addi t1, x0, 0             # EXPECT: t1 = 0x00000000
+sw t1, 0(t0)               # EXPECT: mem[0x0400..0x0403] = 0x00000000; registers unchanged
+lw t2, 0(t0)               # EXPECT: t2 = 0x00000000 from mem[0x0400]
+addi t1, x0, 1             # EXPECT: t1 = 0x00000001
+sw t1, 4(t0)               # EXPECT: mem[0x0404..0x0407] = 0x00000001; registers unchanged
+lw t2, 4(t0)               # EXPECT: t2 = 0x00000001 from mem[0x0404]
+addi t1, x0, -1            # EXPECT: t1 = 0xffffffff
+sw t1, 8(t0)               # EXPECT: mem[0x0408..0x040b] = 0xffffffff; registers unchanged
+lw t2, 8(t0)               # EXPECT: t2 = 0xffffffff from mem[0x0408]
+addi t1, x0, 512           # EXPECT: t1 = 0x00000200
+slli t1, t1, 11            # EXPECT: t1 = 0x00100000
+slli t1, t1, 11            # EXPECT: t1 = 0x80000000
+sw t1, 12(t0)              # EXPECT: mem[0x040c..0x040f] = 0x80000000; registers unchanged
+lw t2, 12(t0)              # EXPECT: t2 = 0x80000000 from mem[0x040c]
+addi t1, x0, 511           # EXPECT: t1 = 0x000001ff
+slli t1, t1, 11            # EXPECT: t1 = 0x000ff800
+addi t1, t1, 2047          # EXPECT: t1 = 0x000fffff
+slli t1, t1, 11            # EXPECT: t1 = 0x7ffff800
+addi t1, t1, 2047          # EXPECT: t1 = 0x7fffffff
+sw t1, 16(t0)              # EXPECT: mem[0x0410..0x0413] = 0x7fffffff; registers unchanged
+lw t2, 16(t0)              # EXPECT: t2 = 0x7fffffff from mem[0x0410]
+addi t1, x0, 72            # EXPECT: t1 = 0x00000048
+slli t1, t1, 11            # EXPECT: t1 = 0x00024000
+addi t1, t1, 1674          # EXPECT: t1 = 0x0002468a
+slli t1, t1, 11            # EXPECT: t1 = 0x12345000
+addi t1, t1, 1656          # EXPECT: t1 = 0x12345678
+sw t1, 20(t0)              # EXPECT: mem[0x0414..0x0417] = 0x12345678; registers unchanged
+lw t2, 20(t0)              # EXPECT: t2 = 0x12345678 from mem[0x0414]
+addi t1, x0, 550           # EXPECT: t1 = 0x00000226
+slli t1, t1, 11            # EXPECT: t1 = 0x00113000
+addi t1, t1, 1401          # EXPECT: t1 = 0x00113579
+slli t1, t1, 11            # EXPECT: t1 = 0x89abc800
+addi t1, t1, 1519          # EXPECT: t1 = 0x89abcdef
+sw t1, 24(t0)              # EXPECT: mem[0x0418..0x041b] = 0x89abcdef; registers unchanged
+lw t2, 24(t0)              # EXPECT: t2 = 0x89abcdef from mem[0x0418]
+addi t1, x0, 682           # EXPECT: t1 = 0x000002aa
+slli t1, t1, 11            # EXPECT: t1 = 0x00155000
+addi t1, t1, 1365          # EXPECT: t1 = 0x00155555
+slli t1, t1, 11            # EXPECT: t1 = 0xaaaaa800
+addi t1, t1, 682           # EXPECT: t1 = 0xaaaaaaaa
+sw t1, 28(t0)              # EXPECT: mem[0x041c..0x041f] = 0xaaaaaaaa; registers unchanged
+lw t2, 28(t0)              # EXPECT: t2 = 0xaaaaaaaa from mem[0x041c]
+lw s0, 28(t0)              # EXPECT: s0 = 0xaaaaaaaa from mem[0x041c]
+lw s0, 24(t0)              # EXPECT: s0 = 0x89abcdef from mem[0x0418]
+lw s0, 20(t0)              # EXPECT: s0 = 0x12345678 from mem[0x0414]
+lw s0, 16(t0)              # EXPECT: s0 = 0x7fffffff from mem[0x0410]
+lw s0, 12(t0)              # EXPECT: s0 = 0x80000000 from mem[0x040c]
+lw s0, 8(t0)               # EXPECT: s0 = 0xffffffff from mem[0x0408]
+lw s0, 4(t0)               # EXPECT: s0 = 0x00000001 from mem[0x0404]
+lw s0, 0(t0)               # EXPECT: s0 = 0x00000000 from mem[0x0400]
