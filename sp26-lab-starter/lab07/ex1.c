@@ -51,11 +51,40 @@ long long int sum_simd(int vals[NUM_ELEMS]) {
     long long int result = 0; // This is where you should put your final result!
     /* DO NOT MODIFY ANYTHING ABOVE THIS LINE (in this function) */
 
-    for(unsigned int w = 0; w < OUTER_ITERATIONS; w++) {
-        /* YOUR CODE GOES HERE */
+    for (unsigned int w = 0; w < OUTER_ITERATIONS; w++) {
+        __m128i sum_vec = _mm_setzero_si128();
+        unsigned int i = 0;
 
-        /* Hint: you'll need a tail case. */
+        for (; i < NUM_ELEMS / 4 * 4; i += 4) {
+            __m128i values =
+                _mm_loadu_si128((__m128i *)(vals + i));
+
+            /* values > 127 is equivalent to values >= 128. */
+            __m128i mask = _mm_cmpgt_epi32(values, _127);
+            values = _mm_and_si128(values, mask);
+            sum_vec = _mm_add_epi32(sum_vec, values);
+        }
+
+        /*
+         * Reduce after each outer iteration. Waiting until all outer
+         * iterations finish could overflow the 32-bit SIMD lanes.
+         */
+        int partial[4];
+        _mm_storeu_si128((__m128i *)partial, sum_vec);
+
+        result += (long long int)partial[0]
+                + partial[1]
+                + partial[2]
+                + partial[3];
+
+        /* Tail case for NUM_ELEMS not divisible by four. */
+        for (; i < NUM_ELEMS; i++) {
+            if (vals[i] >= 128) {
+                result += vals[i];
+            }
+        }
     }
+
 
     /* DO NOT MODIFY ANYTHING BELOW THIS LINE (in this function) */
     clock_t end = clock();
@@ -69,15 +98,75 @@ long long int sum_simd_unrolled(int vals[NUM_ELEMS]) {
     long long int result = 0;
     /* DO NOT MODIFY ANYTHING ABOVE THIS LINE (in this function) */
 
-    for(unsigned int w = 0; w < OUTER_ITERATIONS; w++) {
-        /* YOUR CODE GOES HERE */
-        /* Copy your sum_simd() implementation here, and unroll it */
+    for (unsigned int w = 0; w < OUTER_ITERATIONS; w++) {
+        __m128i sum_vec = _mm_setzero_si128();
+        unsigned int i = 0;
 
-        /* Hint: you'll need 1 or maybe 2 tail cases here. */
+        /* Four SIMD operations per iteration: 4 × 4 = 16 elements. */
+        for (; i < NUM_ELEMS / 16 * 16; i += 16) {
+            __m128i values0 =
+                _mm_loadu_si128((__m128i *)(vals + i));
+            __m128i values1 =
+                _mm_loadu_si128((__m128i *)(vals + i + 4));
+            __m128i values2 =
+                _mm_loadu_si128((__m128i *)(vals + i + 8));
+            __m128i values3 =
+                _mm_loadu_si128((__m128i *)(vals + i + 12));
+
+            __m128i mask0 = _mm_cmpgt_epi32(values0, _127);
+            __m128i mask1 = _mm_cmpgt_epi32(values1, _127);
+            __m128i mask2 = _mm_cmpgt_epi32(values2, _127);
+            __m128i mask3 = _mm_cmpgt_epi32(values3, _127);
+
+            sum_vec = _mm_add_epi32(
+                sum_vec, _mm_and_si128(values0, mask0));
+            sum_vec = _mm_add_epi32(
+                sum_vec, _mm_and_si128(values1, mask1));
+            sum_vec = _mm_add_epi32(
+                sum_vec, _mm_and_si128(values2, mask2));
+            sum_vec = _mm_add_epi32(
+                sum_vec, _mm_and_si128(values3, mask3));
+        }
+
+        int partial[4];
+        _mm_storeu_si128((__m128i *)partial, sum_vec);
+
+        result += (long long int)partial[0]
+                + partial[1]
+                + partial[2]
+                + partial[3];
+
+        /* Handles all remaining 0–15 elements. */
+        for (; i < NUM_ELEMS; i++) {
+            if (vals[i] >= 128) {
+                result += vals[i];
+            }
+        }
     }
+
 
     /* DO NOT MODIFY ANYTHING BELOW THIS LINE (in this function) */
     clock_t end = clock();
     printf("Time taken: %Lf s\n", (long double)(end - start) / CLOCKS_PER_SEC);
     return result;
 }
+
+
+// Let's generate a randomized array.
+// Starting randomized sum.
+// Time taken: 5.235024 s
+// Sum: 103161741312
+
+// Starting randomized unrolled sum.
+// Time taken: 4.196454 s
+// Sum: 103161741312
+
+// Starting randomized SIMD sum.
+// Time taken: 1.807777 s
+// Sum: 103161741312
+
+// Starting randomized SIMD unrolled sum.
+// Time taken: 1.612363 s
+// Sum: 103161741312
+
+// All tests Passed! Correct values were produced, and speedups were achieved!
